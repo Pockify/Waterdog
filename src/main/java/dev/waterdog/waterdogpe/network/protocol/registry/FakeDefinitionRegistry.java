@@ -3,6 +3,8 @@ package dev.waterdog.waterdogpe.network.protocol.registry;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import org.cloudburstmc.protocol.bedrock.data.definitions.BlockDefinition;
 import org.cloudburstmc.protocol.bedrock.data.definitions.ItemDefinition;
@@ -10,6 +12,7 @@ import org.cloudburstmc.protocol.bedrock.data.definitions.SimpleBlockDefinition;
 import org.cloudburstmc.protocol.bedrock.data.definitions.SimpleItemDefinition;
 import org.cloudburstmc.protocol.common.Definition;
 import org.cloudburstmc.protocol.common.DefinitionRegistry;
+import org.cloudburstmc.protocol.common.NamedDefinition;
 
 public class FakeDefinitionRegistry<D extends Definition> implements DefinitionRegistry<D> {
 
@@ -23,6 +26,7 @@ public class FakeDefinitionRegistry<D extends Definition> implements DefinitionR
 
     @Getter
     private final Int2ObjectMap<D> runtimeMap = new Int2ObjectOpenHashMap<>();
+    private final Object2ObjectMap<String, D> identifierMap = new Object2ObjectOpenHashMap<>();
     private final Int2ObjectFunction<D> factory;
 
     public FakeDefinitionRegistry(Int2ObjectFunction<D> factory) {
@@ -30,7 +34,14 @@ public class FakeDefinitionRegistry<D extends Definition> implements DefinitionR
     }
 
     public D getDefinition(String identifier) {
-        return null;
+        return this.identifierMap.get(identifier);
+    }
+
+    public void register(D definition) {
+        this.runtimeMap.put(definition.getRuntimeId(), definition);
+        if (definition instanceof NamedDefinition namedDefinition) {
+            this.identifierMap.put(namedDefinition.getIdentifier(), definition);
+        }
     }
 
     @Override
