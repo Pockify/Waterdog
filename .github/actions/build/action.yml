@@ -15,10 +15,10 @@ runs:
       shell: bash
       run: chmod +x ./gradlew
 
-    - name: Build boot jar
+    - name: Build
       shell: bash
-      run: ./gradlew clean bootJar
+      run: ./gradlew clean build
 
     - name: Show output
       shell: bash
-      run: ls -la build/libs
+      run: find . -path "*/build/libs/*.jar" -type f
