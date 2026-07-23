@@ -1,23 +1,29 @@
 name: Build
-description: Build Waterdog jar
-runs:
-  using: composite
-  steps:
-    - name: Set up Java
-      uses: actions/setup-java@v4
-      with:
-        distribution: temurin
-        java-version: 17
-        cache: gradle
 
-    - name: Make Gradle executable
-      shell: bash
-      run: chmod +x ./gradlew
+on:
+  workflow_dispatch:
+  push:
+    tags-ignore:
+      - '**'
+    branches:
+      - '**'
 
-    - name: Build boot jar
-      shell: bash
-      run: ./gradlew clean bootJar
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
-    - name: Show output
-      shell: bash
-      run: ls -la build/libs
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build jar
+        uses: ./.github/actions/build
+
+      - name: Upload jar artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: waterdog-jar
+          path: build/libs/*.jar
+          if-no-files-found: error
