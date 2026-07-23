@@ -1,19 +1,19 @@
 name: Build
-description: Build the project without Maven publishing
+description: Build the project
 
 inputs:
   repo_token:
     description: GitHub token
-    required: true
+    required: false
   perform_deploy:
-    description: Whether deploy-related steps should run
-    required: true
+    description: Unused
+    required: false
   create_prerelease:
-    description: Whether to create/update prerelease artifacts
-    required: true
+    description: Unused
+    required: false
   prerelease_name:
-    description: Prerelease label
-    required: true
+    description: Unused
+    required: false
 
 runs:
   using: composite
