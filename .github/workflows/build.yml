@@ -1,6 +1,5 @@
 name: Build
 description: Build Waterdog jar
-
 runs:
   using: composite
   steps:
