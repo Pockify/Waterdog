@@ -68,13 +68,13 @@ public abstract class AbstractDownstreamHandler implements ProxyPacketHandler {
 
     @Override
     public PacketSignal handle(ItemComponentPacket packet) {
+        if (this.player.getProtocol().isAfterOrEqual(ProtocolVersion.MINECRAFT_PE_1_21_60)) {
+            setItemDefinitions(packet.getItems());
+        }
         if (!this.player.acceptItemComponentPacket()) {
             return Signals.CANCEL;
         }
         player.setAcceptItemComponentPacket(false);
-        if (this.player.getProtocol().isAfterOrEqual(ProtocolVersion.MINECRAFT_PE_1_21_60)) {
-            setItemDefinitions(packet.getItems());
-        }
         return PacketSignal.UNHANDLED;
     }
 
@@ -196,17 +196,18 @@ public abstract class AbstractDownstreamHandler implements ProxyPacketHandler {
         return connection;
     }
 
-    protected static final String BLOCKING_ID = "minecraft:shield";
-
     protected void setItemDefinitions(Collection<ItemDefinition> definitions) {
         BedrockCodecHelper codecHelper = this.player.getConnection()
             .getPeer()
             .getCodecHelper();
         FakeDefinitionRegistry<ItemDefinition> itemRegistry = FakeDefinitionRegistry.createItemRegistry();
+        IntSet runtimeIds = new IntOpenHashSet();
         for (ItemDefinition definition : definitions) {
-            if (definition.getIdentifier().equals(BLOCKING_ID)) {
-                itemRegistry.getRuntimeMap().put(definition.getRuntimeId(), definition);
-                break;
+            if (runtimeIds.add(definition.getRuntimeId())) {
+                itemRegistry.register(definition);
+            } else {
+                player.getLogger().warning("[{}|{}] has duplicate item definition: {}",
+                        this.player.getName(), this.connection.getServerInfo().getServerName(), definition);
             }
         }
         codecHelper.setItemDefinitions(itemRegistry);
