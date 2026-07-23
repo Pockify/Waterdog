@@ -66,6 +66,7 @@ public class TransferTestHarness implements AutoCloseable {
     public final PlayerManager playerManager = mock(PlayerManager.class);
     public final LoginData loginData = mock(LoginData.class);
     public final BedrockServerSession upstream = mock(BedrockServerSession.class);
+    public final BedrockCodecHelper codecHelper = mock(BedrockCodecHelper.class);
 
     /**
      * Every event passed to the mocked EventManager, in call order.
@@ -119,7 +120,7 @@ public class TransferTestHarness implements AutoCloseable {
         });
 
         ProxiedBedrockPeer peer = mock(ProxiedBedrockPeer.class);
-        when(peer.getCodecHelper()).thenReturn(mock(BedrockCodecHelper.class));
+        when(peer.getCodecHelper()).thenReturn(this.codecHelper);
         when(this.upstream.getPeer()).thenReturn(peer);
         when(this.upstream.isConnected()).thenReturn(true);
 
