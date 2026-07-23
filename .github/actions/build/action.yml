@@ -1,19 +1,5 @@
 name: Build
-description: Build the project
-
-inputs:
-  repo_token:
-    description: GitHub token
-    required: false
-  perform_deploy:
-    description: Unused
-    required: false
-  create_prerelease:
-    description: Unused
-    required: false
-  prerelease_name:
-    description: Unused
-    required: false
+description: Build Waterdog jar
 
 runs:
   using: composite
@@ -29,6 +15,10 @@ runs:
       shell: bash
       run: chmod +x ./gradlew
 
-    - name: Build
+    - name: Build boot jar
       shell: bash
-      run: ./gradlew build
+      run: ./gradlew clean bootJar
+
+    - name: Show output
+      shell: bash
+      run: ls -la build/libs
