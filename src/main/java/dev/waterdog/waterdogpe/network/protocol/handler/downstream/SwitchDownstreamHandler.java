@@ -86,17 +86,15 @@ public class SwitchDownstreamHandler extends AbstractDownstreamHandler {
 
     @Override
     public final PacketSignal handle(ResourcePacksInfoPacket packet) {
-        ResourcePackClientResponsePacket response = new ResourcePackClientResponsePacket();
-        response.setStatus(ResourcePackClientResponsePacket.Status.HAVE_ALL_PACKS);
-        this.connection.sendPacket(response);
+        // Forward resource pack info to client so custom items load on transfer
+        this.player.sendPacket(packet);
         return Signals.CANCEL;
     }
 
     @Override
     public final PacketSignal handle(ResourcePackStackPacket packet) {
-        ResourcePackClientResponsePacket response = new ResourcePackClientResponsePacket();
-        response.setStatus(ResourcePackClientResponsePacket.Status.COMPLETED);
-        this.connection.sendPacket(response);
+        // Forward resource pack stack to client so custom items load on transfer
+        this.player.sendPacket(packet);
         return Signals.CANCEL;
     }
 
