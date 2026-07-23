@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
   push:
     tags-ignore:
-      - '**'
+      - "**"
     branches:
-      - '**'
+      - "**"
 
 jobs:
   build:
@@ -25,5 +25,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: waterdog-jar
-          path: build/libs/*.jar
+          path: "**/build/libs/*.jar"
           if-no-files-found: error
